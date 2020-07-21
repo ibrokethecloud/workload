@@ -3,19 +3,17 @@ package workload
 import (
 	"context"
 	"fmt"
-	"io"
 	"os"
 
+	"k8s.io/client-go/dynamic"
+
 	"github.com/spf13/cobra"
-	"k8s.io/cli-runtime/pkg/genericclioptions"
-	"k8s.io/client-go/kubernetes"
 )
 
 type WorkloadCommandConfig struct {
 	Namespace string
 	AllKinds  bool
-	Out       io.Writer
-	Client    *kubernetes.Clientset
+	Client    dynamic.Interface
 	Context   context.Context
 	Start     bool
 	Stop      bool
@@ -23,11 +21,11 @@ type WorkloadCommandConfig struct {
 
 type WorkloadConfig struct {
 	Name  string `json:"name"`
-	Scale int32  `json:"scale"`
+	Scale int64  `json:"scale"`
 	Kind  string `json:"kind"`
 }
 
-func NewWorkloadCommand(ctx context.Context, streams genericclioptions.IOStreams) (*cobra.Command, error) {
+func NewWorkloadCommand(ctx context.Context) (*cobra.Command, error) {
 	var err error
 	wcc := WorkloadCommandConfig{}
 	rootCmd := &cobra.Command{
@@ -43,7 +41,6 @@ func NewWorkloadCommand(ctx context.Context, streams genericclioptions.IOStreams
 				fmt.Errorf("%v \n", err)
 				os.Exit(1)
 			}
-			wcc.Out = streams.Out
 			wcc.Context = ctx
 			if wcc.Stop && wcc.Start {
 				fmt.Println("Only one option scale-down/scale-up is possible at a time")

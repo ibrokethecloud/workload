@@ -7,14 +7,11 @@ import (
 	"golang.org/x/net/context"
 
 	"github.com/ibrokethecloud/workload/pkg/workload"
-	"k8s.io/cli-runtime/pkg/genericclioptions"
-	"k8s.io/klog"
 )
 
 func main() {
-	defer klog.Flush()
 
-	root, err := workload.NewWorkloadCommand(context.Background(), genericclioptions.IOStreams{In: os.Stdin, Out: os.Stdout, ErrOut: os.Stderr})
+	root, err := workload.NewWorkloadCommand(context.TODO())
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
 		os.Exit(1)
