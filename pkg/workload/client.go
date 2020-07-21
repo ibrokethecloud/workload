@@ -1,11 +1,11 @@
 package workload
 
 import (
-	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-func CreateClientset() (*kubernetes.Clientset, error) {
+func CreateClientset() (dynamic.Interface, error) {
 	loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
 	configOverrides := &clientcmd.ConfigOverrides{}
 	kubeConfig := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, configOverrides)
@@ -15,7 +15,7 @@ func CreateClientset() (*kubernetes.Clientset, error) {
 		return nil, err
 	}
 
-	clientset, err := kubernetes.NewForConfig(config)
+	clientset, err := dynamic.NewForConfig(config)
 	if err != nil {
 		return nil, err
 	}
